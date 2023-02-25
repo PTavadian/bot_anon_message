@@ -1,0 +1,8 @@
+venv
+__pycache__
+shame.db
+bot_run_desktop.bat
+bot_run_laptop.bat
+
+
+
