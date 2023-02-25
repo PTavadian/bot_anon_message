@@ -15,16 +15,16 @@ async def add_group(message: types.Message):
 
     if message.chat.type == 'supergroup' or message.chat.type == 'group':
         db.append_group(message.chat.id, message.chat.title)
-        m = msg_answer.get_msg('reply_7', language)
-        await message.reply(m)
+        msg = msg_answer.get_msg('reply_7_acrivated', language)
+        await message.reply(msg)
         await asyncio.sleep(4)
         await bot.delete_message(message.chat.id, message.message_id) 
         await asyncio.sleep(1)
         await bot.delete_message(message.chat.id, message.message_id+1) 
 
     elif message.chat.type == 'private':
-        m = msg_answer.get_msg('reply_8', language)
-        await message.reply(m)
+        msg = msg_answer.get_msg('reply_8_make_admin', language)
+        await message.reply(msg)
         await asyncio.sleep(4)
         await bot.delete_message(message.chat.id, message.message_id) 
         await asyncio.sleep(1)

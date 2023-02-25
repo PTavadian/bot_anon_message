@@ -9,7 +9,6 @@ from aiogram.dispatcher.filters.state import State, StatesGroup
 
 
 class FSMDel(StatesGroup):
-    del_name = State()
     get_name = State()
     check_name = State()
 
@@ -17,60 +16,64 @@ class FSMDel(StatesGroup):
 
 
 async def help(message : types.Message, state: FSMContext):
+    '''Команда help'''
     if message.chat.type == 'private': 
 
         msg_answer = msg_answ.Text()
         language = message.__dict__['_values']['from']['language_code']
-        m = msg_answer.get_msg('reply_10', language)
+        msg = msg_answer.get_msg('reply_10_helh', language)
 
-        await message.reply(m, reply_markup=types.ReplyKeyboardRemove())
+        await message.reply(msg, reply_markup=types.ReplyKeyboardRemove())
         await state.finish()
 
 
 
 
 async def del_group_name(message : types.Message):
+    '''Возвращает список с группами пользователя'''
     if message.chat.type == 'private':
         await FSMDel.get_name.set()
         lst = db.get_list_group(message.from_user.id)
         msg_answer = msg_answ.Text()
         language = message.__dict__['_values']['from']['language_code']
-        m = msg_answer.get_msg('reply_12', language)
-        n = msg_answer.get_msg('reply_13', language)
-        await message.reply(m, reply_markup=message_kb.get_kb_list_group(lst, n)) 
+        msg = msg_answer.get_msg('reply_12_which_remote', language)
+        hid_msg = msg_answer.get_msg('reply_13_choose', language)
+        await message.reply(msg, reply_markup=message_kb.get_kb_list_group(lst, hid_msg)) 
 
 
 
 
 async def get_group_name(message : types.Message, state: FSMContext):
+    '''Принимает название удаляемой группы'''
     if message.text == '/cancel':
         await state.finish()
         msg_answer = msg_answ.Text()
         language = message.__dict__['_values']['from']['language_code']
-        m = msg_answer.get_msg('reply_6', language)
-        await message.reply(m, reply_markup=types.ReplyKeyboardRemove()) 
+        msg = msg_answer.get_msg('reply_6_ok', language)
+        await message.reply(msg, reply_markup=types.ReplyKeyboardRemove()) 
 
     else:
-        async with state.proxy() as data:
-            data['get_name'] =  message.text
+        async with state.proxy() as dict_state:
+            dict_state['get_name'] =  message.text
         await FSMDel.next()
 
         msg_answer = msg_answ.Text()
         language = message.__dict__['_values']['from']['language_code']
-        m = msg_answer.get_msg('reply_11', language)
-        await message.reply(m, reply_markup=kb_message_2)
+        msg = msg_answer.get_msg('reply_11_delete', language)
+        await message.reply(msg, reply_markup=kb_message_2)
 
 
 
 
 async def check_group_name(message : types.Message, state: FSMContext):
-     async with state.proxy() as data:
-        db.del_name_group(message.from_user.id, data['get_name']) 
+     '''Удаляет название группы из списка пользователя'''
+     async with state.proxy() as dict_state:
+        db.del_name_group(message.from_user.id, dict_state['get_name']) 
         await state.finish()
         msg_answer = msg_answ.Text()
         language = message.__dict__['_values']['from']['language_code']
-        m = msg_answer.get_msg('reply_9', language)
-        await message.reply(m, reply_markup=types.ReplyKeyboardRemove())
+        msg = msg_answer.get_msg('reply_9_ready', language)
+        await message.reply(msg, reply_markup=types.ReplyKeyboardRemove())
 
 
 
