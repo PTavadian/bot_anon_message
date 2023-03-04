@@ -1,10 +1,9 @@
 import sqlite3 as sq
-import time
+import datetime
 import json
-#import asyncio
 
 
-t = str(time.strftime("%m/%d/%Y, %H:%M:%S"))
+
 
 
 def sql_start() -> None:
@@ -18,7 +17,6 @@ def sql_start() -> None:
     base.execute('''CREATE TABLE IF NOT EXISTS groups (
         group_id INTEGER PRIMARY KEY,
         title TEXT,
-        link TEXT,
         time TEXT,
         status TEXT
         )''')
@@ -39,26 +37,28 @@ def sql_start() -> None:
 
 
 
-def append_group(group_id, title, link=None, status='active') -> None:
+def append_group(group_id: int, title: str, status: str='active') -> None:
     '''Записывает в БД id и название группы'''
-    time = t
+
+    time = datetime.datetime.now()
+    time = time.strftime("%d/%m/%Y  %H:%M:%S")
 
     try:
-        cur.execute(f"INSERT INTO groups VALUES('{group_id}', '{title}', '{link}', '{time}', '{status}')")
+        cur.execute(f"INSERT INTO groups VALUES('{group_id}', '{title}', '{time}', '{status}')")
+        base.commit()
     except sq.IntegrityError:
         cur.execute(f"UPDATE groups SET status = '{status}' WHERE group_id == '{group_id}'")
+        base.commit()
     except:
         print('Ошибка при работе с БД ----append_group----')
 
-    base.commit()
 
 
 
 
 
 
-
-def get_id_group(titles) -> str:
+def get_id_group(titles: str) -> str:
     '''Возвращает id группы по названию'''
 
     titles = [titles]
@@ -76,7 +76,7 @@ def get_id_group(titles) -> str:
 
 
 
-def append_user(user_id, first_name, last_name, username, list_group) -> None:
+def append_user(user_id: int, first_name: str, last_name: str, username: str, list_group: list) -> None:
     '''Добавляет нового пользователя в БД или бобавляет к нему название новой группы'''
 
     cur.execute(f"SELECT list_group FROM users WHERE user_id == {user_id}")
@@ -109,7 +109,7 @@ def append_user(user_id, first_name, last_name, username, list_group) -> None:
 
 
 
-def get_list_group(user_id) -> list:
+def get_list_group(user_id: int) -> list:
     '''Возвращает список групп'''
 
     cur.execute(f"SELECT list_group FROM users WHERE user_id == {user_id}")
@@ -124,7 +124,7 @@ def get_list_group(user_id) -> list:
 
 
 
-def del_name_group(user_id, name) -> None:
+def del_name_group(user_id: int, name: str) -> None:
     '''Удаляет группу из БД'''
 
     cur.execute(f"SELECT list_group FROM users WHERE user_id == {user_id}")

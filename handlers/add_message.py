@@ -12,18 +12,8 @@ from aiogram.types import InputMediaPhoto, InputMediaVideo, InputMediaDocument, 
 
 class FSMMess(StatesGroup):    
     group_name = State()
-    id_msg = State()
-    msg_text = State()
-    file_id = State()
-    photo_id = State()
-    viveo_id = State()
-    voice_id = State()
-    trash = State() #исключает дублирование сообщений при ебучей итерации функции
-    poll = State()
-    document_id = State() 
-    audio_id = State() 
-    lst_group = State()
- 
+
+
 
 
 
