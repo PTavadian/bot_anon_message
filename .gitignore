@@ -1,5 +1,6 @@
 venv
 __pycache__
+trash
 shame.db
 bot_run_desktop.bat
 bot_run_laptop.bat

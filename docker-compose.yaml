@@ -1,0 +1,32 @@
+version: '3.5'
+
+services:
+
+  bot:
+    image: bot_shame:${VERSION}
+    container_name: bot_shame
+    build: ./app 
+
+    restart: always
+    volumes:
+      - /root/home/database/shame_db:/app/database/db
+
+#    env_file:
+#      - ./.env
+
+    depends_on:
+      - redis
+
+
+  redis:
+    image: redis:6.2-alpine
+    container_name: redis
+    restart: always
+    ports:
+      - '6379:6379'
+    command: redis-server 
+
+
+
+
+
